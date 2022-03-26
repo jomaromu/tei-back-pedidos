@@ -1419,15 +1419,15 @@ export class PedidosClass {
         },
       },
       {
-        $match: { idReferencia: criterio },
-        // $or: [
+        $match: {
+          $or: [
 
-        // { "Cliente.nombre": criterio },
-        // { idReferencia: criterio },
-        // { "Cliente.telefono": criterio },
+            { "Cliente.nombre": criterio },
+            { idReferencia: criterio },
+            { "Cliente.telefono": criterio },
 
-        // ]
-        // }
+          ]
+        }
       },
       {
         $sort: { etapa_pedido: 1, prioridad_pedido: 1, fecha_actual: 1 }, // prioridad_pedido: 1, fecha_actual: 1
