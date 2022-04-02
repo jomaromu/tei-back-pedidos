@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { verificaToken } from "../auth/auth";
 
 import { PedidosClass } from "../class/pedidosClass";
-// import { BitacoraClass } from '../class/bitacoraClass';
+import { BitacoraClass } from "../class/bitacoraClass";
 
 const pedidoRouter = Router();
 
@@ -77,6 +77,15 @@ pedidoRouter.get(
   (req: Request, resp: Response) => {
     const porEntregar = new PedidosClass();
     porEntregar.porEntregar(req, resp);
+  }
+);
+
+pedidoRouter.get(
+  "/obtenerBitacoraPorPedido",
+  // [verificaToken],
+  (req: Request, resp: Response) => {
+    const obtenerBitacoraPorPedido = new BitacoraClass();
+    obtenerBitacoraPorPedido.obtenerBitacoraPorPedido(req, resp);
   }
 );
 

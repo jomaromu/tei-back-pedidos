@@ -14,9 +14,10 @@ import workerModel from "../models/workerModel";
 
 // Interface
 import { PedidoModelInterface } from "../interfaces/pedidos";
+import { BitacoraInterface } from "../interfaces/bitacora";
 
 // Clases
-// import { BitacoraClass } from './bitacoraClass';
+import { BitacoraClass } from './bitacoraClass';
 
 // Funciones
 // import { castEstado, castITBMS } from '../functions/castEstado';
@@ -175,6 +176,12 @@ export class PedidosClass {
         query.asignado_a = pedidoDB.asignado_a;
       }
 
+      const etapaPed = Number(pedidoDB.etapa_pedido);
+      const etapaPedQuery = Number(query.etapa_pedido);
+
+      const estadoPed = Number(pedidoDB.estado_pedido);
+      const estadoQuery = Number(query.estado_pedido);
+
       const actualizarPedido = () => {
         pedidoModel
           .findByIdAndUpdate(id, query, { new: true })
@@ -198,25 +205,85 @@ export class PedidosClass {
                 });
               }
 
-              // if (query.sucursal) {
-              //     await bitacora.crearBitacora(req, `Cambió sucursal del pedido a ${pedidoDB.sucursal.nombre}`, pedidoDB._id);
-              // }
+              const bitacora = new BitacoraClass();
 
-              // if (query.etapa_pedido) {
-              //     await bitacora.crearBitacora(req, `Cambió etapa del pedido a ${pedidoDB.etapa_pedido.nombre}`, pedidoDB._id);
-              // }
+              // Solo envia etapa
+              if (etapaPed !== etapaPedQuery && estadoPed === estadoQuery) {
 
-              // if (query.prioridad_pedido) {
-              //     await bitacora.crearBitacora(req, `Cambió la prioridad del pedido a ${pedidoDB.prioridad_pedido.nombre}`, pedidoDB._id);
-              // }
+                const data: BitacoraInterface = {
+                  tipo: 'etapa',
+                  usuario: req.usuario._id,
+                  idPedido: pedidoDB._id,
+                  etapaPed: {
+                    tipo: 'original',
+                    id: etapaPed,
+                    nombre: 'etapaPed'
+                  },
+                  etapaPedQuery: {
+                    tipo: 'final',
+                    id: etapaPedQuery,
+                    nombre: 'etapaPedQuery'
+                  }
+                  
+                }
 
-              // if (query.asignado_a) {
-              //     await bitacora.crearBitacora(req, `Asginó el pedido a ${pedidoDB.asignado_a.nombre}`, pedidoDB._id);
-              // }
+                bitacora.crearBitacora(data);
 
-              // if (query.estado_pedido) {
-              //     await bitacora.crearBitacora(req, `Cambió el estado del pedido a ${pedidoDB.estado_pedido}`, pedidoDB._id);
-              // }
+                // Solo envia pedido
+              } else if (etapaPed === etapaPedQuery && estadoPed !== estadoQuery) {
+
+                const data: BitacoraInterface = {
+                  tipo: 'colores',
+                  usuario: req.usuario._id,
+                  idPedido: pedidoDB._id,
+                  estadoPed: {
+                    tipo: 'original',
+                    id: estadoPed,
+                    nombre: 'estadoPed'
+                  },
+                  estadoPedQuery: {
+                    tipo: 'final',
+                    id: estadoQuery,
+                    nombre: 'estadoPedQuery'
+                  }
+                  
+                }
+
+                bitacora.crearBitacora(data);
+
+                // Envia etapa pedido
+              } else if (etapaPed !== etapaPedQuery && estadoPed !== estadoQuery) {
+
+                const data: BitacoraInterface = {
+                  tipo: 'etapa-colores',
+                  usuario: req.usuario._id,
+                  idPedido: pedidoDB._id,
+                  etapaPed: {
+                    tipo: 'original',
+                    id: etapaPed,
+                    nombre: 'etapaPed'
+                  },
+                  etapaPedQuery: {
+                    tipo: 'final',
+                    id: etapaPedQuery,
+                    nombre: 'etapaPedQuery'
+                  },
+                  estadoPed: {
+                    tipo: 'original',
+                    id: estadoPed,
+                    nombre: 'estadoPed'
+                  },
+                  estadoPedQuery: {
+                    tipo: 'final',
+                    id: estadoQuery,
+                    nombre: 'estadoPedQuery'
+                  }
+                  
+                }
+
+                bitacora.crearBitacora(data);
+
+              }
 
               return resp.json({
                 ok: true,
@@ -229,68 +296,6 @@ export class PedidosClass {
       };
 
       actualizarPedido();
-
-      // const idWorker = new mongoose.Types.ObjectId(query.asignado_a);
-
-      // if (
-      //   (pedidoDB.asginado_a === null && query.asignado_a === null) ||
-      //   (pedidoDB.asginado_a !== null && query.asignado_a === null)
-      // ) {
-      //   // console.log("Opcion No. 1 y 2");
-      //   actualizarPedido();
-      //   workerModel.updateMany(
-      //     {},
-      //     { $pull: { pedidos: { $in: [id] } } },
-      //     {},
-      //     (err: any, asignadoDB: any) => {
-      //       if (err) {
-      //         return resp.json({
-      //           ok: false,
-      //           mensaje: "Error interno",
-      //           err,
-      //         });
-      //       } else {
-      //         actualizarPedido();
-      //       }
-      //     }
-      //   );
-      // } else if (
-      //   (pedidoDB.asignado_a === null && query.asignado_a !== null) ||
-      //   (pedidoDB.asginado_a !== null && query.asignado_a !== null)
-      // ) {
-      //   // console.log('Opcion No. 3 y 4');
-      //   // actualizarPedido();
-      //   workerModel.updateMany(
-      //     {},
-      //     { $pull: { pedidos: { $in: [id] } } },
-      //     {},
-      //     (err: any, asignadoDB: any) => {
-      //       if (err) {
-      //         return resp.json({
-      //           ok: false,
-      //           mensaje: "Error interno",
-      //           err,
-      //         });
-      //       } else {
-      //         workerModel.findByIdAndUpdate(
-      //           idWorker,
-      //           { $push: { pedidos: id } },
-      //           (err: any, asignadoDB: any) => {
-      //             if (err) {
-      //               return resp.json({
-      //                 ok: false,
-      //                 mensaje: "Error interno",
-      //                 err,
-      //               });
-      //             } else {
-      //               actualizarPedido();
-      //             }
-      //           }
-      //         );
-      //       }
-      //     }
-      //   );
-      // }
     };
 
     const actualizarGeneral = async () => {
