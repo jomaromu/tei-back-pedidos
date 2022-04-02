@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { CallbackError, Mongoose } from "mongoose";
 const mongoose = require("mongoose");
-import moment from "moment";
+// import moment from "moment";
+import moment from "moment-timezone";
 import bitacoraModel from "../models/bitacoraModel";
 import { BitacoraInterface } from "../interfaces/bitacora";
 
@@ -9,7 +10,8 @@ moment.locale("es");
 
 export class BitacoraClass {
   crearBitacora(data: any): void {
-    const fechaReg = moment().format("DD-MM-YYYY kk:mm");
+    // const fechaReg = moment().format("DD-MM-YYYY kk:mm");
+    const fechaReg = moment.tz('America/Bogota').format("DD-MM-YYYY kk:mm");
     const datosNuevos = { ...data, fechaReg };
     const crearBitacora = new bitacoraModel(datosNuevos);
     crearBitacora.save(
