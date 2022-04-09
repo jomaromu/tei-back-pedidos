@@ -36,7 +36,7 @@ export class PedidosClass {
     const idCreador = req.usuario._id;
     // const idReferencia = this.idRef;
     const idReferencia = this.idRef();
-    const fecha_alta = moment().format("YYYY-MM-DD");
+    const fecha_alta = moment.tz('America/Bogota').format("YYYY-MM-DD");
     // const fecha_alta = moment().format('2021-04-15');
     // const fecha_entrega = moment().add(3, 'days').format('YYYY-MM-DD');
     const fecha_entrega = req.body.fecha_entrega;
