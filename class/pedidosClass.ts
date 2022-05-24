@@ -17,7 +17,7 @@ import { PedidoModelInterface } from "../interfaces/pedidos";
 import { BitacoraInterface } from "../interfaces/bitacora";
 
 // Clases
-import { BitacoraClass } from './bitacoraClass';
+import { BitacoraClass } from "./bitacoraClass";
 
 // Funciones
 // import { castEstado, castITBMS } from '../functions/castEstado';
@@ -36,7 +36,7 @@ export class PedidosClass {
     const idCreador = req.usuario._id;
     // const idReferencia = this.idRef;
     const idReferencia = this.idRef();
-    const fecha_alta = moment.tz('America/Bogota').format("YYYY-MM-DD");
+    const fecha_alta = moment.tz("America/Bogota").format("YYYY-MM-DD");
     // const fecha_alta = moment().format('2021-04-15');
     // const fecha_entrega = moment().add(3, 'days').format('YYYY-MM-DD');
     const fecha_entrega = req.body.fecha_entrega;
@@ -117,6 +117,7 @@ export class PedidosClass {
     const tipo: string = req.body.tipo;
     const id = new mongoose.Types.ObjectId(req.get("id"));
     const sucursal = req.body.sucursal;
+    const idCreador = new mongoose.Types.ObjectId(req.body.idCreador);
     const etapa_pedido = Number(req.body.etapa_pedido);
     const prioridad_pedido = req.body.prioridad_pedido;
     const asignado_a = req.body.asignado_a;
@@ -129,14 +130,19 @@ export class PedidosClass {
 
     const actualizarInfo = async () => {
       const query = {
-        fecha_entrega: fecha_entrega,
-        prioridad_pedido: prioridad_pedido,
-        etapa_pedido: etapa_pedido,
-        asignado_a: asignado_a,
-        estado_pedido: estado_pedido,
-        origen_pedido: origen_pedido,
-        sucursal: sucursal,
+        idCreador,
+        fecha_entrega,
+        prioridad_pedido,
+        etapa_pedido,
+        asignado_a,
+        estado_pedido,
+        origen_pedido,
+        sucursal,
       };
+
+      // console.log(idCreador);
+
+      // return;
 
       const pedidoDB: any = await pedidoModel
         .findById(id)
@@ -146,6 +152,10 @@ export class PedidosClass {
         .populate("productos_pedidos")
         .populate("pagos_pedido")
         .exec();
+
+      if (!query.idCreador) {
+        query.idCreador = pedidoDB.idCreador;
+      }
 
       if (!query.fecha_entrega) {
         query.fecha_entrega = pedidoDB.fecha_entrega;
@@ -209,80 +219,79 @@ export class PedidosClass {
 
               // Solo envia etapa
               if (etapaPed !== etapaPedQuery && estadoPed === estadoQuery) {
-
                 const data: BitacoraInterface = {
-                  tipo: 'etapa',
+                  tipo: "etapa",
                   usuario: req.usuario._id,
                   idPedido: pedidoDB._id,
                   etapaPed: {
-                    tipo: 'original',
+                    tipo: "original",
                     id: etapaPed,
-                    nombre: 'etapaPed'
+                    nombre: "etapaPed",
                   },
                   etapaPedQuery: {
-                    tipo: 'final',
+                    tipo: "final",
                     id: etapaPedQuery,
-                    nombre: 'etapaPedQuery'
-                  }
-                  
-                }
+                    nombre: "etapaPedQuery",
+                  },
+                };
 
                 bitacora.crearBitacora(data);
 
                 // Solo envia pedido
-              } else if (etapaPed === etapaPedQuery && estadoPed !== estadoQuery) {
-
+              } else if (
+                etapaPed === etapaPedQuery &&
+                estadoPed !== estadoQuery
+              ) {
                 const data: BitacoraInterface = {
-                  tipo: 'colores',
+                  tipo: "colores",
                   usuario: req.usuario._id,
                   idPedido: pedidoDB._id,
                   estadoPed: {
-                    tipo: 'original',
+                    tipo: "original",
                     id: estadoPed,
-                    nombre: 'estadoPed'
+                    nombre: "estadoPed",
                   },
                   estadoPedQuery: {
-                    tipo: 'final',
+                    tipo: "final",
                     id: estadoQuery,
-                    nombre: 'estadoPedQuery'
-                  }
-                  
-                }
+                    nombre: "estadoPedQuery",
+                  },
+                };
 
                 bitacora.crearBitacora(data);
 
                 // Envia etapa pedido
-              } else if (etapaPed !== etapaPedQuery && estadoPed !== estadoQuery) {
-
+              } else if (
+                etapaPed !== etapaPedQuery &&
+                estadoPed !== estadoQuery
+              ) {
                 const data: BitacoraInterface = {
-                  tipo: 'etapa-colores',
+                  tipo: "etapa-colores",
                   usuario: req.usuario._id,
                   idPedido: pedidoDB._id,
                   etapaPed: {
-                    tipo: 'original',
+                    tipo: "original",
                     id: etapaPed,
-                    nombre: 'etapaPed'
+                    nombre: "etapaPed",
                   },
                   etapaPedQuery: {
-                    tipo: 'final',
+                    tipo: "final",
                     id: etapaPedQuery,
-                    nombre: 'etapaPedQuery'
+                    nombre: "etapaPedQuery",
                   },
                   estadoPed: {
-                    tipo: 'original',
+                    tipo: "original",
                     id: estadoPed,
-                    nombre: 'estadoPed'
+                    nombre: "estadoPed",
                   },
                   estadoPedQuery: {
-                    tipo: 'final',
+                    tipo: "final",
                     id: estadoQuery,
-                    nombre: 'estadoPedQuery'
-                  }
-                  
-                }
+                    nombre: "estadoPedQuery",
+                  },
+                };
 
                 bitacora.crearBitacora(data);
-
               }
 
               return resp.json({
@@ -500,6 +509,7 @@ export class PedidosClass {
 
   obtenerPedidoID(req: any, resp: Response): void {
     const id = req.get("id") || req.get("pedido");
+    // console.log('err')
 
     pedidoModel
       .findById(id)
@@ -518,8 +528,6 @@ export class PedidosClass {
       .populate("sucursal")
       .populate("origen_pedido")
       .exec((err: CallbackError, pedidoDB: any) => {
-        // console.log(err)
-
         if (err) {
           console.log(err);
           return resp.json({
@@ -536,8 +544,8 @@ export class PedidosClass {
           });
         }
 
-        // const server = Server.instance;
-        // server.io.emit('recibir-pagos', {ok: true, pedidoDB: pedidoDB});
+        const server = Server.instance;
+        server.io.emit("recibir-pedido", { ok: true, pedidoDB: pedidoDB });
 
         return resp.json({
           ok: true,
@@ -1426,13 +1434,11 @@ export class PedidosClass {
       {
         $match: {
           $or: [
-
             { "Cliente.nombre": criterio },
             { idReferencia: criterio },
             { "Cliente.telefono": criterio },
-
-          ]
-        }
+          ],
+        },
       },
       {
         $sort: { etapa_pedido: 1, prioridad_pedido: 1, fecha_actual: 1 }, // prioridad_pedido: 1, fecha_actual: 1
