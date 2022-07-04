@@ -142,7 +142,7 @@ export class PedidosClass {
 
       // console.log(idCreador);
 
-      // return;
+      // return; 
 
       const pedidoDB: any = await pedidoModel
         .findById(id)
@@ -158,15 +158,15 @@ export class PedidosClass {
       }
 
       if (!query.fecha_entrega) {
-        query.fecha_entrega = pedidoDB.fecha_entrega;
+        query.fecha_entrega = pedidoDB.fecha_entrega; 
       }
 
       if (!query.prioridad_pedido) {
-        query.prioridad_pedido = pedidoDB.prioridad_pedido;
+        query.prioridad_pedido = pedidoDB.prioridad_pedido; 
       }
 
       if (isNaN(query.etapa_pedido)) {
-        query.etapa_pedido = pedidoDB.etapa_pedido;
+        query.etapa_pedido = pedidoDB.etapa_pedido;   
       }
 
       if (!query.estado_pedido) {
@@ -174,7 +174,7 @@ export class PedidosClass {
       }
 
       if (!query.origen_pedido) {
-        query.origen_pedido = pedidoDB.origen_pedido;
+        query.origen_pedido = pedidoDB.origen_pedido; 
       }
 
       if (!query.sucursal) {
