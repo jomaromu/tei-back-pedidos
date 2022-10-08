@@ -1,82 +1,37 @@
-import { ClientModelInterface } from "./client";
-import { ProductModelInterface } from './product';
-import { WorkerModelInterface } from "./worker";
-import { PagoInterface } from './pago';
+import { EtapasOrdenadasInterface } from "./etapas";
+import { PrioridadesOrdendasInterface } from "./prioridad";
 
-import { SucursalModel } from "./sucursal";
-import { OrigenPedidoInterface } from "./origenPedido";
-
-export interface PedidoModelInterface {
-    _id: string;
-    idReferencia: string;
-    idCreador: string;
-    fecha_alta: string;
-    fecha_entrega: string;
-    cliente: ClientModelInterface;
-    archivos: Array<ArchivosInterface>;
-    etapa_pedido: number;
-    prioridad_pedido: number;
-    sucursal: SucursalModel;
-    asignado_a: WorkerModelInterface;
-    origen_pedido: OrigenPedidoInterface;
-    productos_pedidos: Array<ProductoPedidoInterface>;
-    pagos_pedido: Array<PagoInterface>;
-    estado_pedido: string;
-    estado: boolean;
-    itbms: boolean;
-    monto_itbms: number;
-    subTotal: number;
-    total: number;
+export interface PedidosInterface {
+  _id: string;
+  idReferencia: string;
+  fechaRegistro: string;
+  fechaEntrega: string;
+  vendedor: any;
+  diseniador: any;
+  cliente: any;
+  sucursal: any;
+  prioridad: any;
+  etapa: any;
+  color: any;
+  origen: any;
 }
 
-export interface ArchivosInterface {
-
-    _id: string;
-    idReferencia: string; // ID directo
-    idCreador: string;
-    nombre_archivo: string;
-    ruta_archivo: string;
-    fecha: string;
-    tipo: string;
-    pedido: string;
-    estado: boolean;
+export interface PromesaPrioridadesOrdInterface {
+  ok: boolean;
+  prioridadOrdenadaDB: PrioridadesOrdendasInterface;
+  mensaje?: string;
 }
 
-export interface EtapaPedidoInterface {
-    _id: string;
-    idCreador: string;
-    nombre: string;
-    nivel: number;
-    estado: boolean;
+export interface PromesaEtapasOrdInterface {
+  ok: boolean;
+  etapasOrdenadasDB: EtapasOrdenadasInterface;
+  mensaje?: string;
 }
 
-export interface PrioridadPedidoInterface {
-    _id: string;
-    idCreador: string;
-    nombre: string;
-    color_prioridad: string;
-    nivel: number;
-    importancia: number;
-    estado: boolean;
-}
+/* 
 
-export interface ProductoPedidoInterface {
-
-    _id: string;
-    cantidad: number;
-    precio: number;
-    total: number;
-    producto: ProductModelInterface;
-    seguimiento_disenio: string;
-    seguimiento_produccion: string;
-    inhabilitado: boolean;
-    estado: boolean;
-}
-
-export interface ActualizarMontosPedido {
-
-    subtotal: number;
-    monto_itbms: number;
-    total: number;
-
-}
+Catalogos referenciados:
+  1. Productos pedidos (Lleva un propiedad itmbs: boolean)
+  2. Archivos
+  3. Pagos
+*/

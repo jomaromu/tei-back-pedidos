@@ -1,17 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import { CallbackError } from 'mongoose';
 import jwt from 'jsonwebtoken';
-const SEED = require('../environment/environment');
 
 // Globales
-import { environmnet } from '../environment/environment';
+import { environment } from '../environment/environment';
 
 const verificaToken = (req: any, resp: Response, next: NextFunction) => {
 
     const token = req.get('token') || '';
 
     // Comprobación del token
-    jwt.verify(token, environmnet.SEED, (err: any, decoded: any) => {
+    jwt.verify(token, environment.SEED, (err: any, decoded: any) => {
 
         if (err) {
             return resp.json({

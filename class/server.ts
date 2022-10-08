@@ -1,7 +1,7 @@
 import express from 'express';
 import socketIO from 'socket.io';
 import http from 'http';
-import { environmnet } from '../environment/environment';
+import { environment } from '../environment/environment';
 
 export default class Server {
 
@@ -17,7 +17,7 @@ export default class Server {
     constructor() {
         this.app = express();
         this.httpServer = new http.Server(this.app);
-        this.port = environmnet.port;
+        this.port = environment.port;
 
         // configuro io
         this.io = new socketIO.Server(this.httpServer, {

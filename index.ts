@@ -21,14 +21,15 @@ server.app.use(fileUpload());
 server.app.use(cors({ origin: true, credentials: true }));
 
 //Models
-require("./models/archivosModel");
-require("./models/productoPedidoModel");
-require("./models/pagosModel");
 require("./models/clientModel");
-require("./models/sucursalModel");
+require("./models/coloresModel");
+require("./models/etapasOrdendas");
 require("./models/origenPedidoModel");
-require("./models/productModel");
+require("./models/prioridadesOrdendas");
+require("./models/sucursalModel");
 require("./models/workerModel");
+require("./models/prioridadModel");
+require("./models/etapasModel");
 
 // conexion local
 mongoose.connect(
