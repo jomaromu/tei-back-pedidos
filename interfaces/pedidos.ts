@@ -14,6 +14,8 @@ export interface PedidosInterface {
   etapa: any;
   color: any;
   origen: any;
+  archivado: boolean;
+  foranea: string;
 }
 
 export interface PromesaPrioridadesOrdInterface {

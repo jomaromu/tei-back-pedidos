@@ -30,10 +30,11 @@ require("./models/sucursalModel");
 require("./models/workerModel");
 require("./models/prioridadModel");
 require("./models/etapasModel");
+require("./models/historialModel");
 
 // conexion local
 mongoose.connect(
-  "mongodb://127.0.0.1:27017/todoImpresiones",
+  "mongodb://127.0.0.1:27017/angie",
   { autoIndex: false },
   (err) => {
     if (err) throw err;
